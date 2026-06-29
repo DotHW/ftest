@@ -1,0 +1,130 @@
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+void main() => runApp(WeatherApp());
+
+class WeatherApp extends StatefulWidget {
+  @override
+  _WeatherAppState createState() => _WeatherAppState();
+}
+
+class _WeatherAppState extends State<WeatherApp> {
+
+  String name = '';
+  String domains = '';
+  String web_pages = '';
+
+
+  fetchUni(String city) async {
+    var url = Uri.parse(
+      'http://universities.hipolabs.com/search?country=Jordan',
+    );
+
+    var response = await http.get(url);
+    if (response.statusCode == 200) {
+      var jsonData = jsonDecode(response.body);
+      setState(() {
+        name = jsonData['name'];
+        domains = jsonData['domains'].toString();
+        web_pages = jsonData['web_pages'].toString();
+
+      });
+    }
+    }
+
+  fetchLogo() async {
+    var url1 = Uri.parse(
+      'http://en.wikipedia.org/api/rest_v1/page/summary/$name',
+    );
+    }
+
+
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(title: Text('Jordan Universities')),
+        body: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: ListView.builder(
+              itemCount:name.length,
+              itemBuilder: (context,index){
+                return Card(
+                  child: ListTile(
+                    leading: CircleAvatar(child: Image.network(fetchLogo(),width: 50,height: 50,)),
+                    title: Text(name),
+                    subtitle: Text(domains),
+                    onTap: setState(() {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => uniDets()),
+                      );
+                    });,
+                  ),
+                );
+              }),
+        ),
+      ),
+    );
+  }
+}
+
+class uniDets extends StatefulWidget {
+  const uniDets({super.key});
+
+  @override
+  State<uniDets> createState() => _uniDetsState();
+}
+
+class _uniDetsState extends State<uniDets> {
+  String name = '';
+
+  String domains = '';
+
+  String web_pages = '';
+
+  fetchUni(String city) async {
+    var url = Uri.parse(
+      'http://universities.hipolabs.com/search?country=Jordan',
+    );
+
+    var response = await http.get(url);
+    if (response.statusCode == 200) {
+      var jsonData = jsonDecode(response.body);
+      setState(() {
+        name = jsonData['name'];
+        domains = jsonData['domains'].toString();
+        web_pages = jsonData['web_pages'].toString();
+
+      });
+    }
+  }
+
+  fetchLogo() async {
+    var url1 = Uri.parse(
+      'http://en.wikipedia.org/api/rest_v1/page/summary/$name',
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text(name),
+        ),
+        
+        body: Column(
+          children: [
+            child: CircleAvatar(child: Image.network(fetchLogo(),width: 50,height: 50,)),
+            child: Text("domain$domains"),
+            child: Text("Web Pages:$web_pages")
+          ],
+        ),
+      ),
+    );
+  }
+}
+

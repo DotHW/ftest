@@ -1,0 +1,44 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const MyApp());
+  class MyApp extends StatefulWidget {
+    const MyApp({super.key});
+    bool c1=false
+  booll c2 = false;
+    bool c3 =false;
+
+    @override
+    State<MyApp> createState() => _MyAppState();
+  }
+
+  class _MyAppState extends State<MyApp> {
+    @override
+    Widget build(BuildContext context) {
+      return const MaterialApp(
+      home:Scaffold(
+      appbar:AppBar()
+  title:(Text:)
+  body:Container
+  Childern[
+    GestureDetector()
+  ]
+  onTap:()
+  setState((){
+    c1=!c2
+  });
+      child:center(
+  child:AnimatedContainer
+  decration:Decoration(c1,30seconed)
+  width:300
+  hight:300
+color:Colors.green,Colors.Colors.white
+  )
+      )
+      )
+  image.netWork(Image:http://picsum.photo/200)
+  icon.Button(onePressed:(){
+    child(text)
+  TextField(dectation:Decation(c2,05:30),)
+
+  c2.stop()

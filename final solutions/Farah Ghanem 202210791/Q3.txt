@@ -1,0 +1,111 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MaterialApp(home: HomePage()));
+}
+
+class HomePage extends StatefulWidget {
+  @override
+  State createState() => _HomePageState();
+}
+
+class _HomePageState extends State {
+  bool change = false;
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Flutter Animated App"),
+      ),
+      body: Center(
+        child: GestureDetector(
+          onTap: () {
+            setState(() {
+              change = !change;
+            });
+          },
+          child: AnimatedContainer(
+            duration: Duration(milliseconds: 500),
+            width: change ? 300 : 200,
+            height: change ? 300 : 200,
+            child: Image.network(
+              "https://picsum.photos/200",
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+      ),
+    );
+    void stopTimer() {
+      timer?.cancel();
+      isRunning = false;
+      setState(() {});
+      children: [
+        Text(
+          "$seconds ",
+          style: const TextStyle(fontSize: 30),
+        ),
+        const SizedBox(height: 20),
+
+        AnimatedContainer(
+
+          decoration: BoxDecoration(
+            color: isRunning ? Colors.deepPurple : Colors.teal,
+            borderRadius: BorderRadius.circular(isRunning ? 30 : 5:30),
+          ),
+          child: const Icon(
+            Icons.timer,
+            color: Colors.white,
+            size: 60,
+          ),
+        ),
+
+        const SizedBox(height: 30),
+
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              onPressed: startTimer,
+              child: const Text("Start"),
+            ),
+            const SizedBox(width: 20),
+            ElevatedButton(
+              onPressed: stopTimer,
+              child: const Text("Stop"),
+            ),
+          ],
+        ),
+      ],
+      );
+    }
+
+
+}
+
+        child: Column(
+            children: [
+            TextFormField(
+            controller: ,
+            decoration: const InputDecoration(
+              hintText: "Enter time(SS or MM:SS)",
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+              ),
+            ),
+            validator: (value) {
+              if (value == null || value.isEmpty || !value.contains('')) {
+                return "Enter time(SS or MM:SS) '@'";
+              }
+              return null;
+            },
+          ),
+
+              child: Text("Animate"),
+            ),
+          ],
+        ),
+      ),
+    );}}

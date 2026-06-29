@@ -1,0 +1,61 @@
+import 'packagefluttermaterial.dart';
+import 'packagehttphttp.dart' as http;
+import 'dartconvert';
+
+void main() {
+  runApp(MaterialApp(home MyApp()));
+}
+
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
+  @override
+  StateMyApp createState() = _MyAppState();
+}
+
+class _MyAppState extends StateMyApp {
+  ListString major = [];
+  ListString dis = [];
+  TextEditingController c1 = TextEditingController();
+  TextEditingController c2 = TextEditingController();
+
+  Futurevoid _fetchDescription() async {
+    try {
+      final res = await http.get(
+        Uri.parse('httpsen.wikipedia.orgapirestv1pagesummary${university_name}'),
+      );
+      if (res.statusCode == 200) {
+        final data = jsonDecode(res.body);
+
+         description can be a String or a Map
+        final desc = data['description'];
+        setState(() {
+          if (desc is String) {
+            _description = desc;
+          } else if (desc is Map) {
+            _description = desc['value'];
+          } else {
+            _description = 'No description available.';
+          }
+          _loading = false;
+        });
+      } else {
+        setState(() {
+          _description = 'No description available.';
+          _loading = false;
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _description = 'No description available.';
+        _loading = false;
+      });
+    }
+  }
+},
+
+
+
+
+
+

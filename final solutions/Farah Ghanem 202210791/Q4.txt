@@ -1,0 +1,60 @@
+import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
+void main() => runApp(MyApp());
+
+class MyApp extends StatefulWidget {
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  List Jordan Uni = [];
+  loadUni() async {
+    var url = Uri.parse(
+        'https://universities.hioplabs.com/sesrch?country=Jordan');
+    var res = await http.get(url);
+    var data = jsonDecode(res.body);
+    setState(() {
+      Jordan Uni = data['results'];
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    Jordan Uni();
+  }
+
+
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(title: Text(' Jordan Uni')),
+        body: ListView.builder(
+          itemCount: Jordan Uni.length,
+          itemBuilder: (context, i) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Image.network(
+                  news[i]['image_url'],
+                  height: 150,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                ),
+                Padding(
+                  padding: EdgeInsets.all(8),
+                  child: Text(
+                    news[i]['title'],
+                    style: TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Divider()
+              ],);},
+        ),),
+    );}}

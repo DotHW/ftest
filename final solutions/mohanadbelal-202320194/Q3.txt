@@ -1,0 +1,104 @@
+import 'package:flutter/material.dart';
+import 'dart:math';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
+  double x = 500, y = 500;
+  String s1 = "";
+  late AnimationController c;
+  late Animation<double> a;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    c = AnimationController(duration: Duration(seconds: 10), vsync: this);
+
+    a = Tween<double>(begin: 1, end: 100).animate(c);
+
+    c.repeat();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        body: Column(
+          children: [
+            GestureDetector(
+
+              child: Image(
+                width:x ,
+                height: y,
+                image: NetworkImage(
+                  "https://picsum.photos/200",
+                ),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+
+
+              },
+              child: Text("Animate"),
+            ),
+
+            SizedBox(
+              width: 200,
+              height: 50,
+              child: TextField(
+                decoration: InputDecoration(
+                    border: OutlineInputBorder()
+                ),
+                onChanged: (u) {
+                  setState(() {
+                    s1 = u;
+                  });
+                },
+              ),
+            ),
+            AnimatedBuilder(
+              animation: a,
+              builder: (context, child) {
+                return Text(
+                  "${a.value.toInt()}",
+                  style: TextStyle(fontSize: 50),
+                );
+              },
+            ),
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  c.stop();
+                });
+              },
+              child: Text("Stop"),
+            ),
+
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  c.repeat();
+                });
+              },
+              child: Text("Start"),
+            ),
+
+
+          ],
+        ),
+      ),
+    );
+  }
+}

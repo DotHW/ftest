@@ -1,0 +1,92 @@
+import 'package:flutter/material.dart';
+
+void main() => runApp(const App1());
+
+class App1 extends StatelessWidget {
+  const App1({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: AnimatedBoxPage(),
+    );
+  }
+}
+
+class AnimatedBoxPage extends StatefulWidget {
+  const AnimatedBoxPage({super.key});
+
+  @override
+  State<AnimatedBoxPage> createState() => _AnimatedBoxPageState();
+}
+
+class _AnimatedBoxPageState extends State<AnimatedBoxPage> {
+  bool big = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("Flutter Animated App")),
+      body: Column(
+        children: [
+          Center(
+            child: GestureDetector(
+              onTap: () => setState(() => big = !big),
+              child: SingleChildScrollView(
+                child: Container(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: AnimatedContainer(
+                      duration: const Duration(seconds: 3),
+                      curve: Curves.easeInOut,
+                      width: big ? 800 : 500,
+                      height: big ? 800 : 500,
+                      decoration: BoxDecoration(
+                        color: Colors.grey,
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(30),
+                        child: AnimatedContainer(duration: Duration(seconds: 3),
+                          curve: Curves.easeInOut,
+                          width: big ? 600 : 300,
+                          height: big ? 600 : 300,
+                          decoration: BoxDecoration(
+                            color: Colors.black,
+                
+                          ),
+                          child: Image.network("https://picsum.photos/200"),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+
+            ),
+
+          ),
+          TextButton(onPressed: (){
+            setState(() {
+              big = !big;
+            });
+          },
+          child: Text("Animate"),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextFormField(
+            decoration: InputDecoration(
+            labelText: 'Enter time (SS or MM:SS)',
+            border: OutlineInputBorder(),
+            ),
+            ),
+          ),
+
+    ],
+        
+      ),
+    );
+  }
+}
+

@@ -1,0 +1,74 @@
+import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+void main() {
+  runApp(const MyApp());
+}
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Home(),
+    );
+  }
+}
+class Home extends StatefulWidget {
+  const Home({super.key});
+
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  List data=[];
+  Future<void> fetchdata()async{
+    var url=Uri.parse("http://universities.hipolabs.com/search?country=Jordan");
+    var response= await http.get(url);
+    var mydata=jsonDecode(response.body);
+    setState(() {
+      mydata = mydata['web_pages'];
+    }
+
+    });
+
+  }
+  @override
+  void initeState(){
+    super.initState();
+    fetchdata();
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("Jordan Universities"),
+        centerTitle: true,
+      backgroundColor: Colors.amber,),
+      body:
+      data.isEmpty?
+          CircularProgressIndicator():
+      ListView.builder(
+          itemCount: data.length,
+          itemBuilder: (context, i) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+            Image.network(
+            data[i]['image_url'],
+              height: 150,
+              width: double.infinity,
+              fit: BoxFit.cover,
+            ),
+
+            );
+            return ListTile(
+           
+
+            )
+  }
+}
+
+
+

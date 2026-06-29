@@ -1,0 +1,189 @@
+q3)<3
+import 'package:flutter/material.dart';
+import 'dart:async';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: ExamScreen(),
+    );
+  }
+}
+
+class ExamScreen extends StatefulWidget {
+  const ExamScreen({Key? key}) : super(key: key);
+
+  @override
+  State createState() => _ExamScreenState();
+}
+
+class _ExamScreenState extends State{
+  double outerSize = 500.0;
+  double innerSize = 300.0;
+  double imageSize = 200.0;
+
+  Timer? _timer;
+  int _timeInSeconds = 0;
+  final TextEditingController _timeController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    startTimer();
+  }
+
+  void animateWidgets() {
+    setState(() {
+      outerSize = 800.0;
+      innerSize = 600.0;
+      imageSize = 400.0;
+    });
+  }
+
+  void parseAndSetTime(String input) {
+    if (input.contains(':')) {
+      List parts = input.split(':');
+      int minutes = int.tryParse(parts[0]) ?? 0;
+      int seconds = int.tryParse(parts[1]) ?? 0;
+      setState(() {
+        _timeInSeconds = (minutes * 60) + seconds;
+      });
+    } else {
+      setState(() {
+        _timeInSeconds = int.tryParse(input) ?? 0;
+      });
+    }
+  }
+
+  void startTimer() {
+    _timer?.cancel();
+
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {
+        if (_timeInSeconds > 0) {
+          _timeInSeconds--;
+        }
+      });
+    });
+  }
+
+  void stopTimer() {
+    _timer?.cancel();
+  }
+
+  String getFormattedTime() {
+    int minutes = _timeInSeconds ~/ 60;
+    int seconds = _timeInSeconds % 60;
+    return "${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}";
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _timeController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          title: const Text('Flutter Animated App'),
+        ),
+        body: SingleChildScrollView(
+            child: Center(
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                    const SizedBox(height: 20),
+                AnimatedContainer(
+                  duration: const Duration(seconds: 3),
+                  width: outerSize,
+                  height: outerSize,
+                  color: Colors.grey[300],
+                  alignment: Alignment.center,
+                  child: AnimatedContainer(
+                    duration: const Duration(seconds: 3),
+                    width: innerSize,
+                    height: innerSize,
+                    color: Colors.grey[500],
+                    alignment: Alignment.center,
+                    child: AnimatedContainer(
+                      duration: const Duration(seconds: 3),
+                      width: imageSize,
+                      height: imageSize,
+                      child: Image.network(
+                        'https://picsum.photos/200',
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: animateWidgets,
+                  child: const Text('Animate'),
+                  
+                const SizedBox(height: 20),
+                 Padding(
+               padding: const EdgeInsets.symmetric(horizontal: 40.0),
+               child: TextField(
+               controller: _timeController,
+             decoration: const InputDecoration(
+             border: OutlineInputBorder(),
+            labelText: 'Enter time (SS or MM:SS)',
+                    ),
+             onSubmitted: (value) {
+             parseAndSetTime(value);
+              },
+               ),
+                ),
+           const SizedBox(height: 20),
+             Container(
+         padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+        color: Colors.green,
+       child: Text(
+         getFormattedTime(),
+         style: const TextStyle(
+         color: Colors.white,
+         fontSize: 24,
+         fontWeight: FontWeight.bold,
+              ),
+              ),
+              ),
+          const SizedBox(height: 20),
+           Row(
+         mainAxisAlignment: MainAxisAlignment.center,
+         children: [
+         TextButton(
+       onPressed: startTimer,
+          child: const Text('Start'),
+            ),
+           const SizedBox(width: 30),
+           TextButton(
+          onPressed: stopTimer,
+         child: const Text('Stop'),
+          ),
+           ],
+            ),
+         const SizedBox(height: 40),
+          ],
+          ),
+          ),
+          ),
+          );
+          }
+          }
+
+
+
+
+

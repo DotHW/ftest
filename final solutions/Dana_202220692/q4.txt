@@ -1,0 +1,248 @@
+import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
+void main() {
+  runApp(
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: UniversitiesPage(),
+    ),
+  );
+}
+
+class UniversitiesPage extends StatefulWidget {
+  @override
+  State<UniversitiesPage> createState() => _UniversitiesPageState();
+}
+
+class _UniversitiesPageState extends State<UniversitiesPage> {
+  List universities = [];
+  bool isLoading = true;
+  String error = "";
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUniversities();
+  }
+
+  Future<void> fetchUniversities() async {
+    try {
+      final response = await http.get(
+        Uri.parse(
+          "http://universities.hipolabs.com/search?country=Jordan",
+        ),
+      );
+
+      universities = jsonDecode(response.body);
+
+      setState(() {
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        error = "No Internet Connection";
+        isLoading = false;
+      });
+    }
+  }
+
+  Future<Map<String, dynamic>> getUniversityData(String name) async {
+    try {
+      final response = await http.get(
+        Uri.parse(
+          "https://en.wikipedia.org/api/rest_v1/page/summary/$name",
+        ),
+      );
+
+      return jsonDecode(response.body);
+    } catch (e) {
+      return {};
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (isLoading) {
+      return Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
+    if (error.isNotEmpty) {
+      return Scaffold(
+        appBar: AppBar(title: Text("Jordan Universities")),
+        body: Center(
+          child: Text(error),
+        ),
+      );
+    }
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Jordan Universities"),
+      ),
+      body: ListView.builder(
+        itemCount: universities.length,
+        itemBuilder: (context, index) {
+          var uni = universities[index];
+
+          return FutureBuilder(
+            future: getUniversityData(uni['name']),
+            builder: (context, snapshot) {
+              Widget avatar = CircleAvatar(
+                child: Text(
+                  uni['alpha_two_code'],
+                ),
+              );
+
+              if (snapshot.hasData &&
+                  snapshot.data!['thumbnail'] != null) {
+                avatar = CircleAvatar(
+                  backgroundImage: NetworkImage(
+                    snapshot.data!['thumbnail']['source'],
+                  ),
+                );
+              }
+
+              return Card(
+                margin: EdgeInsets.all(5),
+                child: ListTile(
+                  leading: avatar,
+                  title: Text(uni['name']),
+                  subtitle: Column(
+                    crossAxisAlignment:
+                        CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Domains: ${uni['domains'][0]}",
+                      ),
+                      Text(
+                        "Web Pages: ${uni['web_pages'][0]}",
+                      ),
+                    ],
+                  ),
+                  onTap: () async {
+                    Map<String, dynamic> wikiData =
+                        await getUniversityData(
+                      uni['name'],
+                    );
+
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            DetailsPage(
+                          university: uni,
+                          wikiData: wikiData,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+}
+
+class DetailsPage extends StatelessWidget {
+  final dynamic university;
+  final Map<String, dynamic> wikiData;
+
+  const DetailsPage({
+    super.key,
+    required this.university,
+    required this.wikiData,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    String imageUrl = "";
+
+    if (wikiData['thumbnail'] != null) {
+      imageUrl = wikiData['thumbnail']['source'];
+    }
+
+    String description =
+        wikiData['extract'] ?? "No Description";
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(university['name']),
+      ),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          children: [
+            if (imageUrl.isNotEmpty)
+              CircleAvatar(
+                radius: 60,
+                backgroundImage:
+                    NetworkImage(imageUrl),
+              )
+            else
+              CircleAvatar(
+                radius: 60,
+                child: Text(
+                  university['alpha_two_code'],
+                  style: TextStyle(fontSize: 24),
+                ),
+              ),
+
+            SizedBox(height: 20),
+
+            Text(
+              university['name'],
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
+            ),
+
+            SizedBox(height: 20),
+
+            Text(
+              "Domains:",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+
+            Text(
+              university['domains'][0],
+            ),
+
+            SizedBox(height: 15),
+
+            Text(
+              "Web Pages:",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+
+            Text(
+              university['web_pages'][0],
+            ),
+
+            SizedBox(height: 20),
+
+            Text(
+              description,
+              textAlign: TextAlign.justify,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+

@@ -1,0 +1,104 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp>
+    with SingleTickerProviderStateMixin {
+  late AnimationController controller;
+  late Animation<double> animation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    controller = AnimationController(
+      duration: const Duration(seconds: 2),
+      vsync: this,
+    )..repeat();
+
+    animation = Tween<double>(
+      begin: 0,
+      end: 6.28, // full circle rotation (2π)
+    ).animate(controller);
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
+
+    return MaterialApp(
+      home: Home(),
+    );
+  }
+}
+class Home extends StatefulWidget {
+
+  const Home({super.key});
+
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  TextEditingController myController = double.parse(TextEditingController());
+  double count=0;
+
+  bool big = false;
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("Flutter Animated App"),),
+      body: Column(
+
+        children: [
+          GestureDetector(
+              onTap: () => setState(() => big = !big),
+
+
+            child: AnimatedContainer(
+            duration: Duration(seconds: myController),
+            color: Colors.red,
+            width: big?800:500,
+            height: big?800:500,
+            child:
+            AnimatedContainer(
+              duration:const Duration(seconds: myController),
+              color: Colors.grey,
+              width: big?600:300,
+              height: big?600:300,
+              child:
+
+                  Image.network("https://picsum.photos/200",
+                    width: big?400:200,
+                    height: big?400:200,),
+
+            ),
+          )
+          ),
+          Text("Animate",),
+          TextField(
+            controller: myController,
+            decoration: const InputDecoration(
+              label: Text("Enter time (SS or MM.SS)"),
+
+          ),)
+
+        ],
+      ),
+    );
+  }
+}

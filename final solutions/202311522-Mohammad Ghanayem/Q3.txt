@@ -1,0 +1,82 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Home(),
+    );
+  }
+}
+class Home extends StatefulWidget {
+  const Home({super.key});
+
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  bool f = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        body: Column(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Text("Flutter Animates App",),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: AnimatedContainer(duration:
+                Duration(seconds: 3),
+                  color: Colors.red,
+                  width: 500,
+                  height: 500,
+                  child: Padding(
+                    padding: const EdgeInsets.all(50.0),
+                    child: AnimatedContainer(duration:
+                    Duration(seconds: 3),
+                      color: Colors.blue,
+                      width: 300,
+                      height: 300,
+                      child: Image.network(
+                        "https://picsum.photos/200", width: 200,
+                        height: 200,),),
+                  ),
+                ),
+              ),
+              GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      f = !f;
+                    });
+                  },
+                  child: ElevatedButton(
+                      child: const Text('Animate'), onPressed: () {
+                    GestureDetector();
+                  }
+                  )
+              ),
+              TextField(
+                  decoration: const InputDecoration(
+                  hintText: "Enter time(SS or MM:SS)",
+
+             ),
+                           )
+
+              ),]
+
+        ));
+  }
+
+
+}
+

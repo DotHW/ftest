@@ -1,0 +1,139 @@
+import 'dart:convert';
+
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
+void main() {
+  runApp(const MyApp());
+}
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  Widget build(BuildContext context) {
+    List data = [];
+    final String apiKey_ = 'YOUR_DATA_KEY';
+
+    @override
+    void initState() {
+      super.initState();
+      fetchNews();
+    }
+
+    fetchNews() async {
+      var url = Uri.parse(
+          "http://en.wikibeadia.org/api/rest_v1/page/summary/Al-BalqaAppliedUni");
+      var response = await http.get(url);
+      if (response.statusCode == 200) {
+        var jsonData = jsonDecode(response.body);
+        setState(() {
+          data = jsonData['data'];
+        });
+      }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+    List uni = [];
+    final String apiKey = 'YOUR_UNI_KEY';
+
+    @override
+    void initState() {
+      super.initState();
+      fetchNews();
+    }
+
+    fetchNews() async {
+      var url = Uri.parse(
+          'https://universities.hipolabs.com/seach?ountry=Jordan');
+      var response = await http.get(url);
+      if (response.statusCode == 200) {
+        var jsonData = jsonDecode(response.body);
+        setState(() {
+          uni = jsonData['uni'];
+        });
+      }
+    }
+
+    return const MaterialApp(
+      home: Home(),
+    );
+  }
+}
+class Home extends StatefulWidget {
+  const Home({super.key});
+
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("Jordan Universities"),centerTitle: true,),
+      body: ListView.builder(
+          itemCount: uni.length,
+          itemBuilder: (context, index) {
+            return ListTile(
+              title: Text(uni[index]['name'] ?? 'No name'),
+              subtitle: Text(uni[index]['domain'] ?? 'No domain'),
+              leading: Image.network("http://en.wikibeadia.org/api/rest_v1/page/summary/{uni_name}"),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) =>uni["name"]()),
+                );
+              },
+            );
+          },
+        
+        
+        
+
+      ));
+  }
+}
+class bulqu_uni extends StatefulWidget {
+  const bulqu_uni({super.key});
+
+  @override
+  State<bulqu_uni> createState() => _bulqu_uniState();
+}
+
+class _bulqu_uniState extends State<bulqu_uni> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("Al-Balqa Applied Uni"),),
+      body: Column(
+        children: [
+          CircleAvatar(child: Image.network("http://en.wikibeadia.org/api/rest_v1/page/summary/{uni_name}"),),
+          Text(uni[index]['name'] ?? 'No name'),
+          Text(uni[index]['domains'] ?? 'No name'),
+          Text(data[index]['title'] ?? 'No name'),
+          Text(data[index]['display'] ?? 'No name'),
+          Text(data[index]['namespace'] ?? 'No name'),
+          Text(data[index]['id'] ?? 'No name'),
+
+
+
+        ],
+      ),
+    );
+  }
+}

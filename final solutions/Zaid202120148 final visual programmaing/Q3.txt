@@ -1,0 +1,185 @@
+import 'dart:async';
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  double outerSize = 500;
+  double innerSize = 300;
+  double imageSize = 200;
+
+  bool expanded = false;
+
+  TextEditingController timerController = TextEditingController();
+
+  Timer? timer;
+  int totalSeconds = 0;
+  int remainingSeconds = 0;
+  bool isRunning = false;
+
+  @override
+  void initState() {
+    super.initState();
+    startTimerFromInput("00:30");
+  }
+
+  int parseTime(String input) {
+    if (input.contains(":")) {
+      List parts = input.split(":");
+      int min = int.parse(parts[0]);
+      int sec = int.parse(parts[1]);
+      return (min * 60) + sec;
+    } else {
+      return int.parse(input);
+    }
+  }
+
+  void startTimerFromInput(String value) {
+    totalSeconds = parseTime(value);
+    remainingSeconds = totalSeconds;
+    startTimer();
+  }
+
+  void startTimer() {
+    timer?.cancel();
+    isRunning = true;
+
+    timer = Timer.periodic(Duration(seconds: 1), (t) {
+      if (remainingSeconds > 0) {
+        setState(() {
+          remainingSeconds--;
+        });
+      } else {
+        t.cancel();
+      }
+    });
+  }
+
+  void pauseTimer() {
+    timer?.cancel();
+    isRunning = false;
+  }
+
+  String formatTime(int seconds) {
+    int m = seconds ~/ 60;
+    int s = seconds % 60;
+    return "${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}";
+  }
+
+  void animateAll() {
+    setState(() {
+      expanded = !expanded;
+
+      outerSize = expanded ? 800 : 500;
+      innerSize = expanded ? 600 : 300;
+      imageSize = expanded ? 400 : 200;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        backgroundColor: Colors.white,
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              SizedBox(height: 40),
+
+              TextField(
+                controller: timerController,
+                decoration: InputDecoration(
+                  hintText: "Enter timer (30 or 05:30)",
+                  border: OutlineInputBorder(),
+                ),
+              ),
+
+              SizedBox(height: 10),
+
+              ElevatedButton(
+                onPressed: () {
+                  startTimerFromInput(timerController.text);
+                },
+                child: Text("Set Timer"),
+              ),
+
+              SizedBox(height: 20),
+
+              Container(
+                padding: EdgeInsets.all(10),
+                color: Colors.green,
+                child: Text(
+                  formatTime(remainingSeconds),
+                  style: TextStyle(color: Colors.white, fontSize: 30),
+                ),
+              ),
+
+              SizedBox(height: 10),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      if (!isRunning) startTimer();
+                    },
+                    child: Text("Start / Resume"),
+                  ),
+                  SizedBox(width: 10),
+                  ElevatedButton(
+                    onPressed: pauseTimer,
+                    child: Text("Stop / Pause"),
+                  ),
+                ],
+              ),
+
+              SizedBox(height: 30),
+
+              AnimatedContainer(
+                duration: Duration(seconds: 3),
+                width: outerSize,
+                height: outerSize,
+                color: Colors.blue,
+                child: Center(
+                  child: AnimatedContainer(
+                    duration: Duration(seconds: 3),
+                    width: innerSize,
+                    height: innerSize,
+                    color: Colors.orange,
+                    child: Center(
+                      child: AnimatedContainer(
+                        duration: Duration(seconds: 3),
+                        width: imageSize,
+                        height: imageSize,
+                        child: Image.network(
+                          "https://picsum.photos/200",
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+
+              SizedBox(height: 20),
+
+              ElevatedButton(
+                onPressed: animateAll,
+                child: Text("Animate All"),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

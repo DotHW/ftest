@@ -1,0 +1,156 @@
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  // This widget is the root of your application.
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Flutter Demo',
+      theme: ThemeData(
+
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+      ),
+      home: const MyHomePage(title: 'Jordan Universities'),
+    );
+  }
+}
+
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key, required this.title});
+
+  final String title;
+
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  List unversities = [];
+String imgUrl ="https://en.wikipedia.org/api/rest_v1/page/summary/";
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUniversities();
+  }
+
+  fetchUniversities() async {
+    var url = Uri.parse(
+        'http://universities.hipolabs.com/search?country=jordan');
+    var response = await http.get(url);
+    if (response.statusCode == 200) {
+      var jsonData = jsonDecode(response.body);
+      setState(() {
+        unversities = jsonData;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
+    return Scaffold(
+      appBar: AppBar(
+
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+
+        title: Text(widget.title),
+      ),
+      body: ListView.builder(
+        itemCount: unversities.length,
+        itemBuilder: (context, index) {
+          return ListTile(
+            title: Column(
+              children: [
+                ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => UniversityPage(name: unversities[index]['name'],doamin: unversities[index]['domains'][0],webPage:unversities[index]['web_pages'][0],)),
+              );
+            },
+            child: Text( unversities[index]['name']),
+                ),
+            ],
+            ),
+            subtitle: Column(
+              children: [
+                Text(unversities[index]['domains'][0]?? 'No domain'),
+                Text(unversities[index]['web_pages'][0]?? 'No web page')
+              ],
+            ),
+
+          );
+        },
+      ),
+
+      // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+}
+
+class UniversityPage extends StatefulWidget {
+  final String name;
+  final String doamin;
+  final String webPage;
+
+
+  UniversityPage({super.key, required this.name, required this.doamin, required this.webPage}){}
+
+  @override
+  State<UniversityPage> createState() => _UniversityPageState();
+}
+
+class _UniversityPageState extends State<UniversityPage> {
+  String imgUrl ="https://en.wikipedia.org/api/rest_v1/page/summary/";
+  List data =[];
+  @override
+  void initState() {
+    super.initState();
+    fetchImg();
+  }
+
+  fetchImg() async {
+    var url = Uri.parse(
+        'https://en.wikipedia.org/api/rest_v1/page/summary/$widget.name');
+    var response = await http.get(url);
+    if (response.statusCode == 200) {
+      var jsonData = jsonDecode(response.body);
+      setState(() {
+        data = jsonData.thumbnail.source;
+      });
+    }
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text(widget.name)),
+      body: Column(
+        children: [
+          Image.network(data.toString()),
+          Text(widget.name),
+          Text(widget.doamin),
+          Text(widget.webPage),
+
+          Center(
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.popUntil(context, (route) => route.isFirst);
+              },
+              child: Text('Go to Main Page'),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

@@ -1,0 +1,209 @@
+import 'dart:async';
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Home(),
+    );
+  }
+}
+
+class Home extends StatefulWidget {
+  const Home({super.key});
+
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  bool animate = false;
+
+  double outerSize = 500;
+  double innerSize = 300;
+  double imageSize = 200;
+
+  final TextEditingController controller = TextEditingController();
+
+  int totalSeconds = 30;
+  Timer? timer;
+
+  @override
+  void initState() {
+    super.initState();
+    startTimer();
+  }
+
+  @override
+  void dispose() {
+    timer?.cancel();
+    controller.dispose();
+    super.dispose();
+  }
+
+  void animateWidgets() {
+    setState(() {
+      animate = !animate;
+
+      outerSize = animate ? 800 : 500;
+      innerSize = animate ? 600 : 300;
+      imageSize = animate ? 400 : 200;
+    });
+  }
+
+  void startTimer() {
+    timer?.cancel();
+
+    timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (totalSeconds > 0) {
+        setState(() {
+          totalSeconds--;
+        });
+      } else {
+        timer.cancel();
+      }
+    });
+  }
+
+  void stopTimer() {
+    timer?.cancel();
+  }
+
+  void setTimerValue() {
+    String text = controller.text.trim();
+
+    if (text.contains(":")) {
+      List<String> parts = text.split(":");
+      if (parts.length == 2) {
+        int minutes = int.tryParse(parts[0]) ?? 0;
+        int seconds = int.tryParse(parts[1]) ?? 0;
+
+        setState(() {
+          totalSeconds = minutes * 60 + seconds;
+        });
+      }
+    } else {
+      int seconds = int.tryParse(text) ?? 0;
+
+      setState(() {
+        totalSeconds = seconds;
+      });
+    }
+
+    startTimer();
+  }
+
+  String formatTime() {
+    int minutes = totalSeconds ~/ 60;
+    int seconds = totalSeconds % 60;
+
+    return "${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}";
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Flutter Animated App"),
+        centerTitle: true,
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            const SizedBox(height: 20),
+
+            AnimatedContainer(
+              duration: const Duration(seconds: 3),
+              width: outerSize,
+              height: outerSize,
+              color: Colors.blue.shade200,
+              alignment: Alignment.center,
+              child: AnimatedContainer(
+                duration: const Duration(seconds: 3),
+                width: innerSize,
+                height: innerSize,
+                color: Colors.orange.shade200,
+                alignment: Alignment.center,
+                child: AnimatedContainer(
+                  duration: const Duration(seconds: 3),
+                  width: imageSize,
+                  height: imageSize,
+                  child: Image.network(
+                    "https://picsum.photos/200",
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            ElevatedButton(
+              onPressed: animateWidgets,
+              child: const Text("Animate"),
+            ),
+
+            const SizedBox(height: 30),
+
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: TextField(
+                controller: controller,
+                decoration: const InputDecoration(
+                  labelText: "Enter SS or MM:SS",
+                  border: OutlineInputBorder(),
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 10),
+
+            ElevatedButton(
+              onPressed: setTimerValue,
+              child: const Text("Set Timer"),
+            ),
+
+            const SizedBox(height: 20),
+
+            Container(
+              padding: const EdgeInsets.all(20),
+              color: Colors.green,
+              child: Text(
+                formatTime(),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  onPressed: startTimer,
+                  child: const Text("Start / Resume"),
+                ),
+                ElevatedButton(
+                  onPressed: stopTimer,
+                  child: const Text("Stop / Pause"),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

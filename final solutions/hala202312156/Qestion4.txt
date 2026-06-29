@@ -1,0 +1,108 @@
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+void main() {
+  runApp(MaterialApp(home: MyApp()));
+}
+
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  List<String> major = [];
+  List<String> dis = [];
+  TextEditingController c1 = TextEditingController();
+  TextEditingController c2 = TextEditingController();
+
+  Future<void> postdata() async {
+    var t = await http.post(
+      Uri.parse("https://jsonplaceholder.typicode.com/posts"),
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({'title': c1.text, 'body': c2.text, 'userId': 1}),
+    );
+
+    if (t.statusCode == 201) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Added!!!!")));
+    } else {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Error")));
+    }
+  }
+
+  Future<void> deletedata(int index) async {
+    var t = await http.delete(
+      Uri.parse("https://en.wikipedia.org/api/rest_vi/page/summary/{university_name}"),
+    );
+
+    if (t.statusCode == 200) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("deleted")));
+    } else {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Error")));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Column(
+        children: [
+          SizedBox(
+            width: 200,
+            height: 50,
+            child: TextFormField(controller: c1),
+          ),
+          SizedBox(
+            width: 200,
+            height: 50,
+            child: TextFormField(controller: c2),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              setState(() {
+                major.add(c1.text);
+                dis.add(c2.text);
+                postdata();
+                c1.clear();
+                c2.clear();
+              });
+            },
+            child: Text("Add"),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: major.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text(major[Al_Balqa Applied University]),
+                  subtitle: Text(dis[index]),
+                  trailing: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        major.removeAt(index);
+                        dis.removeAt(index);
+                        deletedata(index);
+                      });
+                    },
+                    icon: Icon(Icons.delete, color: Colors),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

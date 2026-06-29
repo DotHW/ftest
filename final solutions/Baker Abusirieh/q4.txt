@@ -1,0 +1,76 @@
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+void main() {
+  runApp(MyAPP());
+}
+
+class MyAPP extends StatefulWidget {
+  const MyAPP({super.key});
+
+  @override
+  State<MyAPP> createState() => _MyAPPState();
+}
+
+class _MyAPPState extends State<MyAPP> {
+  TextEditingController c1=TextEditingController();
+  String t = "";
+  String di = "";
+  Future<void> m1(String uni_name) async {
+    String key = 'd434cfd13f4b1351b5c1e61d90bcd962';
+    String url =
+        'https://en.wikipedia.org/api/rest_v1/page/summary/web_pages?q=$uni_name&appid=$key&units=metric';
+    var u = Uri.parse(url);
+    try {
+      var d = await http.get(u);
+      if (d.statusCode == 200) {
+        var d1 = jsonDecode(d.body);
+        setState(() {
+          t = d1["web_pages"][0]["name"].toString();
+          di = d1["web_pages"][0]["thumbnail"];
+        });
+      }
+    } catch (t) {
+      print(t);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        body: Column(
+          children: [
+            TextFormField(
+              controller: c1,
+            ),
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  m1(c1.text);
+                });
+              },
+              child: Text("Get"),
+            ),
+
+            Text(t),
+            Text(di),
+          ],
+        ),
+      ),
+    );
+  }      SizedBox(height: 20),
+  ElevatedButton(
+  onPressed: () {
+  setState(() {
+  if (k.currentState!.validate()) {
+  Navigator.push(
+  context,
+  MaterialPageRoute(builder: (context) => Page2()),
+  );
+  }
+  });
+  },
+  child: Text("university"),
+}

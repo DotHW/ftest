@@ -1,0 +1,47 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  bool f = false;
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        body: Container(
+          child: GestureDetector(
+            onTap: () {
+              setState(() {
+                f = !f;
+
+              });
+            },
+            child: AnimatedContainer(
+              width:  500,
+              height: 300,
+              duration: Duration(seconds: 4),
+                
+              child: Image(
+                image: Image.network('http://picsun.photos/200'),
+                width: 200,
+                height: 200,
+                ),
+
+            )
+
+          ),
+        ),
+      ),
+    );
+  }
+}

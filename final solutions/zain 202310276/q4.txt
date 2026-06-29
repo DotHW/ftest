@@ -1,0 +1,51 @@
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+void main() => runApp(WeatherApp());
+
+class WeatherApp extends StatefulWidget {
+  @override
+  _WeatherAppState createState() => _WeatherAppState();
+}
+
+class _WeatherAppState extends State<WeatherApp> {
+
+  var url = Uri.parse(
+    'http://universitied.hipolabs.com/search?country=Jordan',
+  );
+
+  fetcinfo(String city) async {
+    var url = Uri.parse(
+        'http://universitied.hipolabs.com/search?country=Jordan',
+    );
+
+    var response = await http.get(url);
+    if (response.statusCode == 200) {
+      var jsonData = jsonDecode(response.body);
+      setState(() {
+       return fetchinfo;
+      });
+    } else {
+      setState(() {
+        uni = '';
+        description = 'City not found!';
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(title: Text('jordan universities')),
+        body: ListView.builder(
+    itemCount: articles.length,
+    itemBuilder: (context, index) {
+    return ListTile(
+   
+
+    
+    );
+  }
+}

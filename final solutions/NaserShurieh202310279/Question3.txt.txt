@@ -1,0 +1,79 @@
+import 'package:flutter/material.dart';
+
+
+class AnimatedBoxPage extends StatefulWidget {
+  const AnimatedBoxPage({super.key});
+
+  @override
+  State<AnimatedBoxPage> createState() => _AnimatedBoxPageState();
+}
+
+class _AnimatedBoxPageState extends State<AnimatedBoxPage> {
+  bool big = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("AnimatedContainer")),
+      body: Center(
+
+          child: AnimatedContainer(
+            duration: Duration(seconds: 3),
+            width: big ? 800 : 500,
+            height: big ? 800 : 500,
+            child: GestureDetector(
+              onTap: () => setState(() => big = !big),
+              child: AnimatedContainer(
+                duration: Duration(seconds: 3),
+                width: big ? 600 : 300,
+                height: big ? 600 : 300,
+                  child:
+              Container(
+                child: Image(image: NetworkImage("https://picsum.photos/200"),
+                  width: big ? 400 : 200,
+                  height: big ? 400 : 200,
+                  child: Column(
+                      children: [
+                      ElevatedButton(
+                      onPressed: () {
+                  setState(() {
+                  child: GestureDetector(
+                  onTap: () => setState(() => big = !big),
+                  });
+                  },
+                  child: Text("Animate"),
+                ),
+                        TextField(
+                          onChanged: (i) {
+                            setState(() {
+                              x = i;
+                            });
+                          },
+                        ),
+                        Text("Enter time (SS or MM:SS)")
+                      ],
+                    ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          //resumes the timer
+                              });
+                      },
+                      child: Text("Start"),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          //Pauses the timer
+                        });
+                      },
+                      child: Text("Stop"),
+                  ),
+
+              ),
+              ),
+
+            ),
+      ),
+    );
+  }
+}

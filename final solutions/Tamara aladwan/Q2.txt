@@ -1,0 +1,50 @@
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+void main() => runApp(SimpleNewsApp());
+
+class SimpleNewsApp extends StatefulWidget {
+  @override
+  _SimpleNewsAppState createState() => _SimpleNewsAppState();
+}
+
+class _SimpleNewsAppState extends State<SimpleNewsApp> {
+  List articles = [];
+  final String apiKey = 'YOUR_NEWSAPI_KEY';
+
+  @override
+  void initState() {
+    super.initState();
+    fetchNews();
+  }
+
+  fetchNews() async {
+    var url = Uri.parse(
+        'https://newsapi.org/v2/top-headlines?country=us&apiKey=$apiKey');
+    var response = await http.get(url);
+    if (response.statusCode == 200) {
+      var jsonData = jsonDecode(response.body);
+      setState(() {
+        articles = jsonData['articles'];
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(title: Text('Simple News')),
+        body: ListView.builder(
+          itemCount: articles.length,
+          itemBuilder: (context, index) {
+            return ListTile(
+              title: Text(articles[index]['title'] ?? 'No title'),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}

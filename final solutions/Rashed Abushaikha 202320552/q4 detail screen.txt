@@ -1,0 +1,215 @@
+
+import 'package:flutter/material.dart';
+
+class DetailScreen extends StatelessWidget {
+  final Map show;
+
+  const DetailScreen({super.key, required this.show});
+
+  String _stripHtml(String html) {
+    return html.replaceAll(RegExp(r'<[^>]*>'), '');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var name = show['name'] ?? 'Unknown';
+    var imageOriginal = show['image']?['original'];
+    var imageMedium = show['image']?['medium'];
+    var domains = show['domains']?['average'];
+    var web_pages = (show['web_pages'] as List?)?.join(', ') ?? '';
+    var desc = show['desc'] ?? 'N/A';
+    return Scaffold(
+      backgroundColor: const Color(0xFF141414),
+      body: CustomScrollView(
+        slivers: [
+          // Hero Image AppBar
+          SliverAppBar(
+            expandedHeight: 380,
+            pinned: true,
+            backgroundColor: const Color(0xFF141414),
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back, color: Colors.white),
+              onPressed: () => Navigator.pop(context),
+            ),
+            flexibleSpace: FlexibleSpaceBar(
+              background: Stack(
+                fit: StackFit.expand,
+                children: [
+                  // Background image
+                  imageOriginal != null || imageMedium != null
+                      ? Image.network(
+                    imageOriginal ?? imageMedium!,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) => _imagePlaceholder(),
+                  )
+                      : _imagePlaceholder(),
+                  // Gradient overlay
+                  const DecoratedBox(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Colors.transparent,
+                          Color(0xCC000000),
+                          Color(0xFF141414),
+                        ],
+                        stops: [0.4, 0.75, 1.0],
+                      ),
+                    ),
+                  ),
+                  // Title at bottom of image
+                  Positioned(
+                    bottom: 16,
+                    left: 16,
+                    right: 16,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          name,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                            shadows: [Shadow(blurRadius: 8, color: Colors.black)],
+                          ),
+                        ),
+                        if (desc != null) ...[
+                          const SizedBox(height: 6),
+                          Row(
+                            children: [
+                              const Icon(Icons.star, color: Colors.amber, size: 18),
+                              const SizedBox(width: 4),
+                              Text(
+                                desc,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          // Details
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Genres chips
+                  if (genres != 'N/A')
+                    Wrap(
+                      spacing: 8,
+                      children: genres.split(' • ').map((g) {
+                        return Chip(
+                          label: Text(g, style: const TextStyle(color: Colors.white, fontSize: 12)),
+                          backgroundColor: const Color(0xFFE50914),
+                          padding: EdgeInsets.zero,
+                        );
+                      }).toList(),
+                    ),
+
+                  const SizedBox(height: 16),
+
+                  // Info Row
+                  Row(
+                    children: [
+                      _infoCard(Icons.circle, status,
+                          status == 'Running' ? Colors.green : Colors.red),
+                      const SizedBox(width: 8),
+                      _infoCard(Icons.language, language, Colors.blue),
+                      const SizedBox(width: 8),
+                      _infoCard(Icons.calendar_today, premiered, Colors.orange),
+                    ],
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  // Network
+                  _detailRow(Icons.tv, 'Network', network),
+
+                  const SizedBox(height: 20),
+
+                  // Summary
+                  const Text(
+                    'Overview',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    summary,
+                    style: const TextStyle(
+                      color: Colors.white70,
+                      fontSize: 14,
+                      height: 1.6,
+                    ),
+                  ),
+
+                  const SizedBox(height: 30),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _infoCard(IconData icon, String label, Color color) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+        decoration: BoxDecoration(
+          color: const Color(0xFF1E1E1E),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Column(
+          children: [
+            Icon(icon, color: color, size: 18),
+            const SizedBox(height: 4),
+            Text(
+              label,
+              textAlign: TextAlign.center,
+              style: const TextStyle(color: Colors.white70, fontSize: 11),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _detailRow(IconData icon, String label, String value) {
+    return Row(
+      children: [
+        Icon(icon, color: const Color(0xFFE50914), size: 20),
+        const SizedBox(width: 8),
+        Text('$label: ', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        Text(value, style: const TextStyle(color: Colors.white70)),
+      ],
+    );
+  }
+
+  Widget _imagePlaceholder() {
+    return Container(
+      color: const Color(0xFF2A2A2A),
+      child: const Center(child: Icon(Icons.movie, color: Colors.white24, size: 60)),
+    );
+  }
+}
+}

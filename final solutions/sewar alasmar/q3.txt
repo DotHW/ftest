@@ -1,0 +1,121 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MyApp());
+}
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  with SingleTickerProviderStateMixin {
+  late AnimationController controller;
+  late Animation<double> animation;
+  @override
+  void initState() {
+  super.initState();
+
+
+  bool f=true;
+  bool ckliced=true;
+  bool image=true;
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(title: Text('FLUTTER ANIMATED APP'),
+        ),
+        body: Container(
+            padding: EdgeInsets.all(50),
+            height: 500,
+          width: 500,
+
+          child: Container(
+            height: 300,
+            width: 300,
+            child: child: Image(
+            width: 200,
+            height: 200,
+            image: NetworkImage(http://piscom.photos/200
+
+
+            ),
+        ),
+      ),
+
+        child: Column(
+            children: [
+            GestureDetector(
+            onTap: () {
+      setState(() {
+      f = !f;
+      });
+      child:Text("Animate");
+      },child:
+          AnimatedContainer(
+            duration: Duration(seconds: 3),
+            width: isClicked ? 500 : 800,
+            height: isClicked?500 : 800,
+          )
+          child:
+      AnimatedContainer(
+      duration: Duration(seconds: 3),
+      width: isClicked ? 300 : 600,
+      height: isClicked?300 : 600,
+    )
+    child:
+    AnimatedContainer(
+      duration: Duration(seconds: 3),
+      width: image ? 200 : 400,
+      height: image ?200 : 400,
+    )
+    TextFormField(
+    decoration: const InputDecoration(
+
+     hintText: "timer value",
+    label: Text("timer value"),
+ border: OutlineInputBorder(
+     borderRadius: BorderRadius.all(Radius.circular(10)))),
+    validator: _validateEmail,
+  ),
+
+TextField(
+  decoration: InputDecoration(
+    labelText: 'Enter ini timer',
+  ),
+);
+
+
+  TweenAnimationBuilder(
+  tween: Tween<double>(begin: 0, end: 1),
+  duration: Duration(seconds: 1),
+  builder: (context, value, child) {
+  return Opacity(opacity: value, child: child);
+  },
+  child: Text(''),
+  )
+  ElevatedButton(
+  onPressed: () {
+  setState(() {
+  controller.stop();
+  });
+  },
+  child: Text("Stop"),
+  ),
+
+  ElevatedButton(
+  onPressed: () {
+  setState(() {
+  controller.repeat();
+  });
+  },
+  child: Text("start"),
+  ),
+
+
+    );
+  }
+}

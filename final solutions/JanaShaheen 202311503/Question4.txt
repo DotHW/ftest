@@ -1,0 +1,164 @@
+import 'dart:convert';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+void main(){
+  runApp(homescreen());
+}
+class homescreen extends StatefulWidget {
+  const homescreen({super.key});
+  @override
+  State<homescreen> createState() => _homescreenState();
+}
+class _homescreenState extends State<homescreen> {
+  List products=[];
+  void fetchdata() async{
+    var url=Uri.parse('https://fakestoreapi.com/Products');
+    final responce= await http.get(url);
+    if (responce.statusCode==200){
+      setState(() {
+        products=jsonDecode(responce.body);
+      });
+    }
+    
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fetchdata();
+  }
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text("List Items"),
+        ),
+        body: ListView.builder(
+          itemCount:products.length,
+            itemBuilder: (context,index){
+            final item=products[index];
+            return Card(
+              child: ListTile(
+                leading: CircleAvatar(child: Image.network(item['image'],width: 50,height: 50,)),
+                title: Text(item['title']),
+                subtitle: Text('${item['price']}'),
+final TextEditingController titleController = TextEditingController();
+  final TextEditingController bodyController = TextEditingController();
+
+  List posts = [];
+
+
+  void fetchPosts() async {
+    final response =
+    await http.get(Uri.parse("https://jsonplaceholder.typicode.com/posts"));
+    if (response.statusCode == 200) {
+      setState(() {
+        posts = jsonDecode(response.body).take(10).toList();
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchPosts();
+  }
+
+  void savePost() async {
+    final response = await http.post(
+      Uri.parse("https://jsonplaceholder.typicode.com/posts"),
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({
+        'title': titleController.text,
+        'body': bodyController.text,
+        'userId': 1,
+      }),
+    );
+
+    if (response.statusCode == 201) {
+      final newPost = jsonDecode(response.body);
+      setState(() {
+        posts.insert(0, newPost);
+        titleController.clear();
+        bodyController.clear();
+      });
+
+    }
+  }
+
+
+  void deletePost(int id) async {
+    final response = await http.delete(
+      Uri.parse("https://jsonplaceholder.typicode.com/posts/$id"),
+    );
+
+    if (response.statusCode == 200) {
+      setState(() {
+        posts.removeWhere((post) => post['id'] == id);
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Post deleted')),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to delete post')),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(title: Text('Save & Delete Posts')),
+        body: Padding(
+          padding: EdgeInsets.all(12),
+          child: Column(
+            children: [
+              TextField(
+                controller: titleController,
+                decoration: InputDecoration(labelText: 'Title'),
+              ),
+              TextField(
+                controller: bodyController,
+                decoration: InputDecoration(labelText: 'Body'),
+              ),
+              SizedBox(height: 10),
+              ElevatedButton(
+                onPressed: savePost,
+                child: Text('Save Post'),
+              ),
+              SizedBox(height: 20),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: posts.length,
+                  itemBuilder: (context, index) {
+                    final post = posts[index];
+                    return Card(
+                      //margin: EdgeInsets.symmetric(vertical: 6),
+                      child: ListTile(
+                        title: Text(post['title'] ?? ''),
+                        subtitle: Text(post['body'] ?? ''),
+                        trailing: IconButton(
+                          icon: Icon(Icons.delete, color: Colors.red),
+                          onPressed: () => deletePost(post['id']),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ));
+  }
+}
+
+              ),
+            );
+            }),
+      ),
+    );
+  }
+}

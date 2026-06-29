@@ -1,0 +1,44 @@
+import 'package:flutter/material.dart';
+import 'dart:math';
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  bool f = false;
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        body: Container(
+          child: GestureDetector(
+            onTap: () {
+              setState(() {
+                f = !f;
+              });
+            },
+            children:  [ AnimatedContainer(
+              duration: Duration(seconds: 3),
+              width: f ? 500 : 800,
+              height: f ? 500 : 800,
+              ),
+              AnimatedContainer(
+              duration: Duration(seconds: 3),
+              width: f ? 300 : 600,
+              height: f ? 300 : 600,
+              Image: [NetworkImage('https://picsum.photos/200',
+              width: f ? 200 : 400,
+              height: f ? 200 : 400,
+],
+                     ),
+              ),
+              ],
+
+

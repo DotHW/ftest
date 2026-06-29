@@ -1,0 +1,139 @@
+import 'package:flutter/material.dart';
+
+void main() => runApp(const App1());
+
+class App1 extends StatelessWidget {
+  const App1({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: AnimatedBoxPage(),
+    );
+  }
+}
+
+class AnimatedBoxPage extends StatefulWidget {
+  const AnimatedBoxPage({super.key});
+
+  @override
+  State<AnimatedBoxPage> createState() => _AnimatedBoxPageState();
+}
+
+class _AnimatedBoxPageState extends State<AnimatedBoxPage> {
+  bool big = false;
+  bool big2 = false;
+  bool big3 = false;
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("AnimatedContainer")),
+      body: Center(
+
+
+        child: GestureDetector(
+          onTap: () => setState(() => big = !big),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 700),
+            curve: Curves.easeInOut,
+            width: big ? 800 : 500,
+            height: big ? 800 : 500,
+            decoration: BoxDecoration(
+              color: big ? Colors.deepPurple : Colors.teal,
+              borderRadius: BorderRadius.circular(big ? 30 : 10),
+              border: Border.all(
+                color: big ? Colors.orange : Colors.white,
+                width: big ? 6 : 2,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  blurRadius: big ? 20 : 6,
+                  spreadRadius: 1,
+                  color: Colors.black.withOpacity(0.2),
+                ),
+              ],
+
+            ),
+
+            child: GestureDetector(
+              onTap: () => setState(() => big2 = !big2),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 700),
+                curve: Curves.easeInOut,
+                width: big2 ? 600 : 300,
+                height: big2 ? 600 : 300,
+                decoration: BoxDecoration(
+                  color: big2 ? Colors.deepPurple : Colors.teal,
+                  borderRadius: BorderRadius.circular(big2 ? 30 : 10),
+                  border: Border.all(
+                    color: big2 ? Colors.orange : Colors.white,
+                    width: big2 ? 6 : 2,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      blurRadius: big2 ? 20 : 6,
+                      spreadRadius: 1,
+                      color: Colors.black.withOpacity(0.2),
+                    ),
+                  ],
+
+                ),
+
+
+                child: GestureDetector(
+                  onTap: () => setState(() => big3 = !big3),
+                  child: AnimatedContainer(
+
+                    duration: const Duration(milliseconds: 700),
+                    curve: Curves.easeInOut,
+                    width: big3 ? 400 : 200,
+                    height: big3 ? 400 : 200,
+                    decoration: BoxDecoration(
+                      color: big3 ? Colors.deepPurple : Colors.teal,
+                      borderRadius: BorderRadius.circular(big3 ? 30 : 10),
+                      border: Border.all(
+                        color: big3 ? Colors.orange : Colors.white,
+                        width: big3 ? 6 : 2,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          blurRadius: big3 ? 20 : 6,
+                          spreadRadius: 1,
+                          color: Colors.black.withOpacity(0.2),
+                        ),
+                      ],
+
+                    ),
+
+                    child: Center(
+                        child: Image.network("http://picsum.photos/200")
+                    ),
+                  ),
+                ),
+              ),
+            ),
+
+          ),
+
+
+        ),
+      ),
+
+        ElevatedButton(
+          onPressed: () {
+            setState(() {
+              size = newSize //a function that'll change the size i dont have time to build;
+            });
+          },
+
+
+          child: TextField(
+            controller: timeController,
+            Text("Enter time (SS or MM:SS")
+          ),
+        );
+  }
+}

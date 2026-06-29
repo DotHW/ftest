@@ -1,0 +1,165 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  MyApp({super.key});
+
+  IconData icon1 = Icons.favorite;
+  IconData icon2 = Icons.person;
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+
+      home: Scaffold(
+
+        appBar: AppBar(
+          title: Text("Flutter Animated APP"),
+
+          centerTitle: true,
+
+          backgroundColor: Colors.purple,
+
+          elevation: 10,
+
+          toolbarHeight: 75,
+
+          // Left icon
+          leading: const Icon(Icons.menu),
+
+          // Right icons
+          actions: const [
+            Icon(Icons.search),
+            SizedBox(width: 10),
+            Icon(Icons.settings),
+            SizedBox(width: 10),
+          ],
+
+          titleTextStyle: TextStyle(
+              fontSize: 22 ,
+              fontWeight: FontWeight.bold
+          ),
+
+
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(
+              bottom: Radius.circular(20),
+            ),
+          ),
+
+          iconTheme: IconThemeData(
+              color: Colors.white
+          ),
+        ),
+
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {},
+          child: Icon(Icons.add),
+        ),
+
+        body: SingleChildScrollView(
+
+          child: Column(
+
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.max,
+
+            children: [
+
+              // Container
+              Container(
+                margin: const EdgeInsets.all(15),
+                padding: const EdgeInsets.all(15),
+                alignment: Alignment.center,
+
+                width: 450,
+                height: 150,
+
+                decoration: BoxDecoration(
+                    color: Colors.lightBlueAccent,
+                    border: Border.all(color: Colors.black , width: 2),
+                    borderRadius: BorderRadius.circular(10),
+
+                    boxShadow: [
+                      BoxShadow(
+                          color: Colors.grey,
+                          blurRadius: 5,
+                          offset: Offset(12, 12)
+                      )
+                    ]
+                ),
+
+                child: Text(
+                  "This is a Container",
+                  style: TextStyle(fontSize: 18, color: Colors.white),
+                ),
+              ),
+
+              SizedBox(height: 30),
+
+              // Row with Icons
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+
+                children: [
+                  Icon(Icons.home, size: 30, color: Colors.blue),
+                  Icon(icon1, size: 30, color: Colors.red),   // another way to define icon then call it
+                  Icon(icon2, size: 30, color: Colors.green),
+                ],
+              ),
+
+              SizedBox(height: 30),
+
+
+
+              SizedBox(height: 15),
+
+              Image(
+                image: NetworkImage("https://picsum.photos/200"),
+                height: 150,
+                fit: BoxFit.contain,
+                alignment: Alignment.center,
+              ),
+
+              SizedBox(height: 30),
+
+              Image.asset(
+                "assets/asu logo.png",
+                width: 150,
+              ),
+
+              SizedBox(height: 15),
+
+              Image(
+                image: AssetImage("assets/asu logo.png"),
+                width: 150,
+              ),
+
+              SizedBox(height: 30),
+
+              AnimatedBuilder(
+                animation: controller,
+                builder: (context, child) {
+                  return Transform.rotate(
+                    angle: controller.value * 6.28,
+                    child: child,
+                  );
+                },
+                child: Icon(Icons.sync, size: 80),
+              )
+
+
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

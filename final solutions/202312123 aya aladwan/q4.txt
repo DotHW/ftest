@@ -1,0 +1,79 @@
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+void main() {
+  runApp(MyAPP());
+}
+
+class MyAPP extends StatefulWidget {
+  const MyAPP({super.key});
+
+  @override
+  State<MyAPP> createState() => _MyAPPState();
+}
+
+class _MyAPPState extends State<MyAPP> {
+  TextEditingController c1=TextEditingController();
+  String t = "";
+  String di = "";
+  String s="Amman";
+  List<String> op=[
+    "Arab open  uni",
+    "Applied science university",
+    "Al-Balqa Applied Universtiy",
+    "German jordanian Universtiy",
+    "Hashmeite Universtiy",
+    " irbid national Universtiy",
+    "Al-isra Universtiy",
+
+  ];
+  Future<void> m1(String city) async {
+    String key = 'd434cfd13f4b1351b5c1e61d90bcd962';
+    String url =
+        'https://en.wikipedia.org/api/rest_v1/page/summary/Al-Balqa Applied University;
+    var u = Uri.parse(url);
+    try {
+      var d = await http.get(u);
+      if (d.statusCode == 200) {
+        var d1 = jsonDecode(d.body);
+        setState(() {
+          t = d1["main"]["temp"].toString();
+          di = d1["weather"][0]["description"];
+        });
+      }
+    } catch (t) {
+      print(t);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        body: Column(
+          children: [
+            DropdownButton(
+              items:op.map<DropdownMenuItem<String>>((String h){
+                return DropdownMenuItem(
+                  value: h,
+                  child: Text(h),
+                );
+
+              }).toList() ,
+              onChanged: (n){
+                setState(() {
+                  s=n!;
+                  m1(s);
+                });
+
+              } ,
+            ),
+            Text(t),
+            Text(di),
+          ],
+        ),
+      ),
+    );
+  }
+}

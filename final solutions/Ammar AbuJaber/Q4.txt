@@ -1,0 +1,52 @@
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+void main() => runApp(SimpleNewsApp());
+
+class SimpleNewsApp extends StatefulWidget {
+  @override
+  _SimpleNewsAppState createState() => _SimpleNewsAppState();
+}
+
+class _SimpleNewsAppState extends State<SimpleNewsApp> {
+  List universities = [];
+  final String apiKey = 'YOUR_NEWSAPI_KEY';
+
+  @override
+  void initState() {
+    super.initState();
+    fetchNews();
+  }
+
+  fetchNews() async {
+    var url = Uri.parse(
+        'http://universities.hipolabs.com/search?country=Jordan$apiKey');
+    var response = await http.get(url);
+    if (response.statusCode == 200) {
+      var jsonData = jsonDecode(response.body);
+      setState(() {
+        universities = jsonData['articles'];
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(title: Text('Jordan Universities'),
+        centerTitle: true,
+        ),
+        body: ListView.builder(
+          itemCount: universities.length,
+          itemBuilder: (context, index) {
+            return ListTile(
+              title: Text(universities[index]['title'] ?? 'No title'),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
